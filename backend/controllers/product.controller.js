@@ -46,7 +46,24 @@ export const getProducts = async (req, res, next) => {
             products = products.filter(product => product.popularityScore <= parseFloat(maxPopularity));
         }
 
-        products.sort((a, b) => {
+        let goldPriceUSD, goldPriceEUR;
+        try {
+            const goldPrices = await goldPriceService.getGoldPrices();
+            goldPriceUSD = goldPrices.USD;
+            goldPriceEUR = goldPrices.EUR;
+        } catch (goldError) {
+            console.error('Gold price service error:', goldError);
+            goldPriceUSD = 100;
+            goldPriceEUR = 85;
+        }
+
+        const productsWithPrices = products.map(product => ({
+            ...product,
+            priceUSD: goldPriceService.calculateProductPrice(product.popularityScore, product.weight, 'USD'),
+            priceEUR: goldPriceService.calculateProductPrice(product.popularityScore, product.weight, 'EUR')
+        }));
+
+        productsWithPrices.sort((a, b) => {
             let aValue, bValue;
 
             switch (sort) {
@@ -54,11 +71,14 @@ export const getProducts = async (req, res, next) => {
                     aValue = a.weight;
                     bValue = b.weight;
                     break;
-                case 'name':
-                    aValue = a.name.toLowerCase();
-                    bValue = b.name.toLowerCase();
+                case 'price':
+                    aValue = a.priceUSD;
+                    bValue = b.priceUSD;
                     break;
                 case 'popularity':
+                    aValue = a.popularityScore;
+                    bValue = b.popularityScore;
+                    break;
                 default:
                     aValue = a.popularityScore;
                     bValue = b.popularityScore;
@@ -72,37 +92,20 @@ export const getProducts = async (req, res, next) => {
             }
         });
 
-        const totalProducts = products.length;
+        const totalProducts = productsWithPrices.length;
         const totalPages = limit ? Math.ceil(totalProducts / parseInt(limit)) : 1;
         const currentPage = parseInt(page);
         const itemsPerPage = limit ? parseInt(limit) : totalProducts;
         const startIndex = (currentPage - 1) * itemsPerPage;
         const endIndex = startIndex + itemsPerPage;
 
-        const paginatedProducts = products.slice(startIndex, endIndex);
-
-        let goldPriceUSD, goldPriceEUR;
-        try {
-            const goldPrices = await goldPriceService.getGoldPrices();
-            goldPriceUSD = goldPrices.USD;
-            goldPriceEUR = goldPrices.EUR;
-        } catch (goldError) {
-            console.error('Gold price service error:', goldError);
-            goldPriceUSD = 100;
-            goldPriceEUR = 85;
-        }
-
-        const productsWithPrices = paginatedProducts.map(product => ({
-            ...product,
-            priceUSD: goldPriceService.calculateProductPrice(product.popularityScore, product.weight, 'USD'),
-            priceEUR: goldPriceService.calculateProductPrice(product.popularityScore, product.weight, 'EUR')
-        }));
+        const paginatedProducts = productsWithPrices.slice(startIndex, endIndex);
 
         const response = {
             success: true,
             message: 'Products fetched successfully',
             data: {
-                products: productsWithPrices,
+                products: paginatedProducts,
                 pagination: {
                     currentPage,
                     totalPages,

@@ -8,7 +8,7 @@ class GoldPriceService {
             EUR: null
         };
         this.lastUpdate = null;
-        this.updateInterval = 5 * 60 * 1000;
+        this.updateInterval = 60 * 60 * 1000;
         this.isUpdating = false;
     }
 
