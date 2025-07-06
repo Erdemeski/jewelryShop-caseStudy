@@ -2,7 +2,7 @@ import { Button, Dropdown, Navbar, NavbarToggle } from 'flowbite-react'
 import { Link, useLocation } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 import { FaMoon, FaSun } from 'react-icons/fa'
-import { FaTurkishLiraSign, FaDollarSign } from 'react-icons/fa6'
+import { FaEuroSign, FaDollarSign } from 'react-icons/fa6'
 import { GrCurrency } from "react-icons/gr"
 import { useSelector, useDispatch } from "react-redux"
 import { toggleTheme } from '../redux/theme/themeSlice'
@@ -59,10 +59,10 @@ export default function Header() {
                                 <span className='flex justify-center'>USD</span>
                             </div>
                         </Dropdown.Item>
-                        <Dropdown.Item className={currency === 'try' ? 'dark:bg-slate-600 bg-gray-100' : ''} onClick={() => dispatch(selectCurrency('try'))}>
+                        <Dropdown.Item className={currency === 'eur' ? 'dark:bg-slate-600 bg-gray-100' : ''} onClick={() => dispatch(selectCurrency('eur'))}>
                             <div className='flex justify-center items-center'>
-                                <FaTurkishLiraSign className='w-5 h-5 mr-1' />
-                                <span className='flex justify-center'>TRY</span>
+                                <FaEuroSign className='w-5 h-5 mr-1' />
+                                <span className='flex justify-center'>EUR</span>
                             </div>
                         </Dropdown.Item>
                     </Dropdown>
@@ -112,10 +112,10 @@ export default function Header() {
                                             <span className='flex justify-center'>USD</span>
                                         </div>
                                     </Dropdown.Item>
-                                    <Dropdown.Item className={currency === 'try' ? 'dark:bg-slate-600 bg-gray-100' : ''} onClick={() => dispatch(selectCurrency('try'))}>
+                                    <Dropdown.Item className={currency === 'eur' ? 'dark:bg-slate-600 bg-gray-100' : ''} onClick={() => dispatch(selectCurrency('eur'))}>
                                         <div className='flex justify-center items-center'>
-                                            <FaTurkishLiraSign className='w-5 h-5 mr-1' />
-                                            <span className='flex justify-center'>TRY</span>
+                                            <FaEuroSign className='w-5 h-5 mr-1' />
+                                            <span className='flex justify-center'>EUR</span>
                                         </div>
                                     </Dropdown.Item>
                                 </Dropdown>

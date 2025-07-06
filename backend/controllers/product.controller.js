@@ -81,17 +81,21 @@ export const getProducts = async (req, res, next) => {
 
         const paginatedProducts = products.slice(startIndex, endIndex);
 
-        let goldPrice;
+        let goldPriceUSD, goldPriceEUR;
         try {
-            goldPrice = await goldPriceService.getGoldPrice();
+            const goldPrices = await goldPriceService.getGoldPrices();
+            goldPriceUSD = goldPrices.USD;
+            goldPriceEUR = goldPrices.EUR;
         } catch (goldError) {
             console.error('Gold price service error:', goldError);
-            goldPrice = 100;
+            goldPriceUSD = 100;
+            goldPriceEUR = 85;
         }
 
         const productsWithPrices = paginatedProducts.map(product => ({
             ...product,
-            price: goldPriceService.calculateProductPrice(product.popularityScore, product.weight),
+            priceUSD: goldPriceService.calculateProductPrice(product.popularityScore, product.weight, 'USD'),
+            priceEUR: goldPriceService.calculateProductPrice(product.popularityScore, product.weight, 'EUR')
         }));
 
         const response = {
@@ -116,7 +120,8 @@ export const getProducts = async (req, res, next) => {
                     minPopularity: minPopularity ? parseFloat(minPopularity) : null,
                     maxPopularity: maxPopularity ? parseFloat(maxPopularity) : null
                 },
-                goldPrice: goldPrice
+                goldPriceUSD: goldPriceUSD,
+                goldPriceEUR: goldPriceEUR
             }
         };
 

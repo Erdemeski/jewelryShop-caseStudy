@@ -3,22 +3,37 @@ import { errorHandler } from './error.js';
 
 class GoldPriceService {
     constructor() {
-        this.goldPrice = null;
+        this.goldPrices = {
+            USD: null,
+            EUR: null
+        };
         this.lastUpdate = null;
         this.updateInterval = 5 * 60 * 1000;
         this.isUpdating = false;
     }
 
-    async fetchGoldPrice() {
+    async fetchGoldPrices() {
         try {
-            const response = await axios.get("https://www.goldapi.io/api/XAU/USD", {
-                headers: {"x-access-token": process.env.GOLD_PRICE_API,
-                    "Content-Type": "application/json"}
+            const usdResponse = await axios.get("https://www.goldapi.io/api/XAU/USD", {
+                headers: {
+                    "x-access-token": process.env.GOLD_PRICE_API,
+                    "Content-Type": "application/json"
+                }
             });
-            const result = response.data;
-            return result.price_gram_22k;
+
+            const eurResponse = await axios.get("https://www.goldapi.io/api/XAU/EUR", {
+                headers: {
+                    "x-access-token": process.env.GOLD_PRICE_API,
+                    "Content-Type": "application/json"
+                }
+            });
+
+            return {
+                USD: usdResponse.data.price_gram_22k,
+                EUR: eurResponse.data.price_gram_22k
+            };
         } catch (error) {
-            console.error('Error fetching gold price:', error);
+            console.error('Error fetching gold prices:', error);
             
             if (error.response) {
                 if (error.response.status === 401) {
@@ -36,22 +51,27 @@ class GoldPriceService {
         }
     }
 
-    async getGoldPrice() {
+    async getGoldPrices() {
         const now = Date.now();
 
-        if (!this.goldPrice || !this.lastUpdate || (now - this.lastUpdate) > this.updateInterval) {
+        if (!this.goldPrices.USD || !this.goldPrices.EUR || !this.lastUpdate || (now - this.lastUpdate) > this.updateInterval) {
             if (!this.isUpdating) {
                 this.isUpdating = true;
                 try {
-                    this.goldPrice = await this.fetchGoldPrice();
+                    const prices = await this.fetchGoldPrices();
+                    this.goldPrices = prices;
                     this.lastUpdate = now;
-                    console.log(`Gold price updated: $${this.goldPrice}`);
+                    console.log(`Gold prices updated: USD $${prices.USD}, EUR €${prices.EUR}`);
                 } catch (error) {
-                    console.error('Failed to update gold price:', error);
+                    console.error('Failed to update gold prices:', error);
 
-                    if (!this.goldPrice) {
-                        this.goldPrice = 100;
-                        console.log('Using default gold price: $100 per gram (22k)');
+                    if (!this.goldPrices.USD) {
+                        this.goldPrices.USD = 100;
+                        console.log('Using default USD gold price: $100 per gram (22k)');
+                    }
+                    if (!this.goldPrices.EUR) {
+                        this.goldPrices.EUR = 85;
+                        console.log('Using default EUR gold price: €85 per gram (22k)');
                     }
                 } finally {
                     this.isUpdating = false;
@@ -59,11 +79,12 @@ class GoldPriceService {
             }
         }
 
-        return this.goldPrice;
+        return this.goldPrices;
     }
 
-    calculateProductPrice(popularityScore, weight) {
-        return (popularityScore + 1) * weight * this.goldPrice;
+    calculateProductPrice(popularityScore, weight, currency) {
+        const goldPrice = this.goldPrices[currency] || this.goldPrices.USD;
+        return (popularityScore + 1) * weight * goldPrice;
     }
 }
 
