@@ -2,8 +2,14 @@ import { Button, Dropdown, Navbar, NavbarToggle } from 'flowbite-react'
 import { Link, useLocation } from 'react-router-dom'
 import React, { useEffect, useState } from 'react'
 import { FaMoon, FaSun } from 'react-icons/fa'
+import { FaTurkishLiraSign, FaDollarSign } from 'react-icons/fa6'
+import { GrCurrency } from "react-icons/gr"
 import { useSelector, useDispatch } from "react-redux"
 import { toggleTheme } from '../redux/theme/themeSlice'
+import { toggleLanguage } from '../redux/page_Language/languageSlice';
+import { selectCurrency } from '../redux/currency/currencySlice';
+import en from "../assets/lang_Icons/en.png";
+import tr from "../assets/lang_Icons/tr.png";
 import logo from "../assets/photos/ring-diamond.png";
 
 export default function Header() {
@@ -11,6 +17,8 @@ export default function Header() {
     const dispatch = useDispatch();
     const path = useLocation().pathname;
     const { theme } = useSelector((state) => state.theme);
+    const { language } = useSelector((state) => state.language);
+    const { currency } = useSelector((state) => state.currency);
     const [isScrolled, setIsScrolled] = useState(false);
 
     useEffect(() => {
@@ -32,6 +40,33 @@ export default function Header() {
                     </span>
                 </Link>
                 <div className='flex gap-1 md:order-2'>
+
+                    <Button className='w-13 h-11 dark:bg-[rgb(22,26,29)]/70 hidden sm:inline' color='gray' pill onClick={() => dispatch(toggleLanguage())}>
+                        {language === 'en' ?
+                            <div className='flex justify-center items-center'><img src={en} alt="" className='w-4 h-4' /></div>
+                            :
+                            <div className='flex justify-center items-center'><img src={tr} alt="" className='w-4 h-4' /></div>}
+                    </Button>
+
+                    <Dropdown className='hidden sm:inline' label="" dismissOnClick={false} renderTrigger={() => <span>
+                        <Button className='w-13 h-11 dark:bg-[rgb(22,26,29)]/70 hidden sm:inline' color='gray' pill>
+                            <GrCurrency className='w-4 h-4 text-gray-700 dark:text-gray-300' />
+                        </Button>
+                    </span>}>
+                        <Dropdown.Item className={currency === 'usd' ? 'dark:bg-slate-600 bg-gray-100' : ''} onClick={() => dispatch(selectCurrency('usd'))}>
+                            <div className='flex justify-center items-center'>
+                                <FaDollarSign className='w-5 h-5 mr-1' />
+                                <span className='flex justify-center'>USD</span>
+                            </div>
+                        </Dropdown.Item>
+                        <Dropdown.Item className={currency === 'try' ? 'dark:bg-slate-600 bg-gray-100' : ''} onClick={() => dispatch(selectCurrency('try'))}>
+                            <div className='flex justify-center items-center'>
+                                <FaTurkishLiraSign className='w-5 h-5 mr-1' />
+                                <span className='flex justify-center'>TRY</span>
+                            </div>
+                        </Dropdown.Item>
+                    </Dropdown>
+
                     <Button className='w-13 h-11 dark:bg-[rgb(22,26,29)]/70 hidden sm:inline' color='gray' pill onClick={() => dispatch(toggleTheme())}>
                         {theme === 'light' ? <FaSun className='text-gray-700 dark:text-gray-300' /> : <FaMoon className='text-gray-700 dark:text-gray-300' />}
                     </Button>
@@ -55,6 +90,37 @@ export default function Header() {
                         </Link>
                     </Navbar.Link>
                     <div className='flex justify-center sm:hidden'>
+                        <Navbar.Link as={'div'}>
+                            <div onClick={(e) => e.stopPropagation()}>
+                                <Dropdown label="Language" className='rounded-full z-50' inline>
+                                    <Button className='w-13 h-11 justify-center items-center mx-1' color='gray' pill onClick={() => dispatch(toggleLanguage())}>
+                                        {language === 'en' ?
+                                            <div className='flex justify-center items-center'><img src={en} alt="" className='w-4 h-4' /></div>
+                                            :
+                                            <div className='flex justify-center items-center'><img src={tr} alt="" className='w-4 h-4' /></div>}
+                                    </Button>
+                                </Dropdown>
+                            </div>
+                        </Navbar.Link>
+
+                        <Navbar.Link as={'div'}>
+                            <div onClick={(e) => e.stopPropagation()}>
+                                <Dropdown label="Currency" className='z-50' inline>
+                                    <Dropdown.Item className={currency === 'usd' ? 'dark:bg-slate-600 bg-gray-100' : ''} onClick={() => dispatch(selectCurrency('usd'))}>
+                                        <div className='flex justify-center items-center'>
+                                            <FaDollarSign className='w-5 h-5 mr-1' />
+                                            <span className='flex justify-center'>USD</span>
+                                        </div>
+                                    </Dropdown.Item>
+                                    <Dropdown.Item className={currency === 'try' ? 'dark:bg-slate-600 bg-gray-100' : ''} onClick={() => dispatch(selectCurrency('try'))}>
+                                        <div className='flex justify-center items-center'>
+                                            <FaTurkishLiraSign className='w-5 h-5 mr-1' />
+                                            <span className='flex justify-center'>TRY</span>
+                                        </div>
+                                    </Dropdown.Item>
+                                </Dropdown>
+                            </div>
+                        </Navbar.Link>
 
                         <Navbar.Link as={'div'}>
                             <div onClick={(e) => e.stopPropagation()}>
