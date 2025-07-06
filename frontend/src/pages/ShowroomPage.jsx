@@ -2,12 +2,14 @@ import { Spinner } from 'flowbite-react'
 import React, { useEffect, useState, useCallback, useMemo } from 'react'
 import ProductCard from '../components/ProductCard'
 import ShowroomSidebar from '../components/ShowroomSidebar'
+import { useSelector } from 'react-redux'
 
 export default function ShowroomPage() {
     const [products, setProducts] = useState([])
     const [loading, setLoading] = useState(true)
     const [filters, setFilters] = useState({})
     const [urlParams, setUrlParams] = useState(new URLSearchParams(location.search));
+    const { currency } = useSelector((state) => state.currency);
 
     const searchTerm = urlParams.get('search') || '';
     const sort = urlParams.get('sort') || 'popularity';
@@ -18,19 +20,19 @@ export default function ShowroomPage() {
     const handleSearch = useCallback((newFilters) => {
         const updatedFilters = { ...filters, ...newFilters };
         setFilters(updatedFilters);
-        
+
         const searchParams = new URLSearchParams();
         Object.entries(updatedFilters).forEach(([key, value]) => {
             if (value !== '' && value !== null && value !== undefined) {
                 searchParams.set(key, value);
             }
         });
-        
+
         const newUrl = `${window.location.pathname}?${searchParams.toString()}`;
         window.history.pushState({}, '', newUrl);
-        
+
         setUrlParams(searchParams);
-        
+
         fetchProducts(updatedFilters);
     }, [filters]);
 
@@ -38,22 +40,22 @@ export default function ShowroomPage() {
         setLoading(true);
         try {
             const params = new URLSearchParams();
-            
+
             const search = currentFilters.search !== undefined ? currentFilters.search : searchTerm;
             const sortParam = currentFilters.sort || sort;
             const orderParam = currentFilters.order || order;
             const minWeightParam = currentFilters.minWeight !== undefined ? currentFilters.minWeight : minWeight;
             const maxWeightParam = currentFilters.maxWeight !== undefined ? currentFilters.maxWeight : maxWeight;
-            
+
             if (search) params.set('search', search);
             if (sortParam) params.set('sort', sortParam);
             if (orderParam) params.set('order', orderParam);
             if (minWeightParam) params.set('minWeight', minWeightParam);
             if (maxWeightParam) params.set('maxWeight', maxWeightParam);
-            
+
             const queryString = params.toString();
             const url = `/api/product/getproducts${queryString ? `?${queryString}` : ''}`;
-            
+
             const res = await fetch(url);
             if (!res.ok) {
                 console.error('Failed to fetch products:', res.status, res.statusText);
@@ -78,7 +80,7 @@ export default function ShowroomPage() {
         if (order) initialFilters.order = order;
         if (minWeight) initialFilters.minWeight = minWeight;
         if (maxWeight) initialFilters.maxWeight = maxWeight;
-        
+
         setFilters(initialFilters);
         fetchProducts(initialFilters);
     }, [fetchProducts]);
@@ -90,7 +92,7 @@ export default function ShowroomPage() {
         if (order) currentFilters.order = order;
         if (minWeight) currentFilters.minWeight = minWeight;
         if (maxWeight) currentFilters.maxWeight = maxWeight;
-        
+
         setFilters(currentFilters);
         fetchProducts(currentFilters);
     }, [searchTerm, sort, order, minWeight, maxWeight, fetchProducts]);
@@ -150,7 +152,7 @@ export default function ShowroomPage() {
                         <div>
                             <div className='flex flex-wrap gap-5 mt-5 justify-center'>
                                 {memoizedProducts.map((product, index) => (
-                                    <ProductCard key={`${product.name}-${index}`} product={product} />
+                                    <ProductCard key={`${product.name}-${index}`} product={product} currency={currency} />
                                 ))}
                             </div>
                         </div>
