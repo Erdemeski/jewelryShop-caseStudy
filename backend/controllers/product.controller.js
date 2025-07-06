@@ -1,7 +1,8 @@
-//import { errorHandler } from "../utils/error.js";
+import { errorHandler } from "../utils/error.js";
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import goldPriceService from '../utils/goldPriceService.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -80,11 +81,24 @@ export const getProducts = async (req, res, next) => {
 
         const paginatedProducts = products.slice(startIndex, endIndex);
 
+        let goldPrice;
+        try {
+            goldPrice = await goldPriceService.getGoldPrice();
+        } catch (goldError) {
+            console.error('Gold price service error:', goldError);
+            goldPrice = 100;
+        }
+
+        const productsWithPrices = paginatedProducts.map(product => ({
+            ...product,
+            price: goldPriceService.calculateProductPrice(product.popularityScore, product.weight),
+        }));
+
         const response = {
             success: true,
             message: 'Products fetched successfully',
             data: {
-                products: paginatedProducts,
+                products: productsWithPrices,
                 pagination: {
                     currentPage,
                     totalPages,
@@ -101,13 +115,19 @@ export const getProducts = async (req, res, next) => {
                     maxWeight: maxWeight ? parseFloat(maxWeight) : null,
                     minPopularity: minPopularity ? parseFloat(minPopularity) : null,
                     maxPopularity: maxPopularity ? parseFloat(maxPopularity) : null
-                }
+                },
+                goldPrice: goldPrice
             }
         };
 
         res.status(200).json(response);
 
     } catch (error) {
-        next(error);
+        console.error('Error in getProducts:', error);
+        if (error.statusCode) {
+            next(error);
+        } else {
+            next(errorHandler(500, 'Internal server error while fetching products'));
+        }
     }
 };
