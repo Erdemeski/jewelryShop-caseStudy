@@ -24,6 +24,22 @@ body{
     height: 100vh;
 }
 
+* {
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+}
+
+.transition-all {
+    will-change: transform, opacity;
+}
 
 @font-face {
     font-family: 'Avenir';

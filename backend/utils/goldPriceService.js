@@ -61,7 +61,7 @@ class GoldPriceService {
                     const prices = await this.fetchGoldPrices();
                     this.goldPrices = prices;
                     this.lastUpdate = now;
-                    console.log(`Gold prices updated: USD $${prices.USD}, EUR €${prices.EUR}`);
+                    console.log(`Gold prices updated: USD $${prices.USD}, EUR €${prices.EUR}\nlast update: ${new Date(this.lastUpdate).toLocaleString()}`);
                 } catch (error) {
                     console.error('Failed to update gold prices:', error);
 
@@ -85,6 +85,10 @@ class GoldPriceService {
     calculateProductPrice(popularityScore, weight, currency) {
         const goldPrice = this.goldPrices[currency] || this.goldPrices.USD;
         return (popularityScore + 1) * weight * goldPrice;
+    }
+
+    getLastUpdateFormatted() {
+        return this.lastUpdate ? new Date(this.lastUpdate).toLocaleString() : null;
     }
 }
 

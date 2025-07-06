@@ -121,7 +121,8 @@ export const getProducts = async (req, res, next) => {
                     maxPopularity: maxPopularity ? parseFloat(maxPopularity) : null
                 },
                 goldPriceUSD: goldPriceUSD,
-                goldPriceEUR: goldPriceEUR
+                goldPriceEUR: goldPriceEUR,
+                lastUpdate: goldPriceService.getLastUpdateFormatted()
             }
         };
 

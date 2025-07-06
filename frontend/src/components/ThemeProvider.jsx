@@ -1,29 +1,38 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useSelector } from 'react-redux'
-
 
 export default function ThemeProvider({ children }) {
     const { theme } = useSelector((state) => state.theme)
+    const metaThemeColorRef = useRef(null)
     
     useEffect(() => {
-        document.documentElement.style.colorScheme = theme;
+        const root = document.documentElement
         
-        let metaThemeColor = document.querySelector('meta[name="theme-color"]');
-        if (!metaThemeColor) {
-            metaThemeColor = document.createElement('meta');
-            metaThemeColor.name = 'theme-color';
-            document.head.appendChild(metaThemeColor);
+        if (root.style.colorScheme !== theme) {
+            root.style.colorScheme = theme
         }
         
-        if (theme === 'dark') {
-            metaThemeColor.content = '#161a1d';
-        } else {
-            metaThemeColor.content = '#ffffff';
+        if (!metaThemeColorRef.current) {
+            let metaThemeColor = document.querySelector('meta[name="theme-color"]')
+            if (!metaThemeColor) {
+                metaThemeColor = document.createElement('meta')
+                metaThemeColor.name = 'theme-color'
+                document.head.appendChild(metaThemeColor)
+            }
+            metaThemeColorRef.current = metaThemeColor
         }
         
-        document.documentElement.style.setProperty('color-scheme', theme, 'important');
+        const newColor = theme === 'dark' ? '#161a1d' : '#ffffff'
+        if (metaThemeColorRef.current.content !== newColor) {
+            metaThemeColorRef.current.content = newColor
+        }
         
-    }, [theme]);
+        const currentColorScheme = root.style.getPropertyValue('color-scheme')
+        if (currentColorScheme !== theme) {
+            root.style.setProperty('color-scheme', theme, 'important')
+        }
+        
+    }, [theme])
     
     return (
         <div className={theme}>
