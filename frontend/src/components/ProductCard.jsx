@@ -97,7 +97,7 @@ export default function ProductCard({ product, currency }) {
                 <div className='flex justify-start items-center mt-2'>
                     <div className="flex items-center gap-0">
                         {renderStars(defineStarRating())}
-                        <span className='font-avenir font-normal text-[14px] text-black ml-2 '>{defineStarRating()}/5</span>
+                        <span className='font-avenir font-normal text-[14px] text-black ml-2'>{defineStarRating()}/5</span>
                     </div>
                 </div>
             </div>
