@@ -10,6 +10,7 @@ export default function ShowroomPage() {
     const [filters, setFilters] = useState({})
     const [urlParams, setUrlParams] = useState(new URLSearchParams(location.search));
     const { currency } = useSelector((state) => state.currency);
+    const [data, setData] = useState([]);
 
     const searchTerm = urlParams.get('search') || '';
     const sort = urlParams.get('sort') || 'popularity';
@@ -64,6 +65,7 @@ export default function ShowroomPage() {
                 return;
             }
             const data = await res.json();
+            setData(data);
             setProducts(data.data?.products || []);
             setLoading(false);
         } catch (error) {
@@ -110,6 +112,7 @@ export default function ShowroomPage() {
                         minWeight={minWeight}
                         maxWeight={maxWeight}
                         handleSearch={handleSearch}
+                        data={data}
                     />
                 </div>
 

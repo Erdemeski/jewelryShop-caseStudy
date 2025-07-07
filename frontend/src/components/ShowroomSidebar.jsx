@@ -9,10 +9,12 @@ export default function ShowroomSidebar({
     order,
     minWeight,
     maxWeight,
+    data,
 }) {
     const [localSearchTerm, setLocalSearchTerm] = useState(searchTerm);
     const [localMinWeight, setLocalMinWeight] = useState(minWeight);
     const [localMaxWeight, setLocalMaxWeight] = useState(maxWeight);
+    console.log(data);
 
     useEffect(() => {
         setLocalSearchTerm(searchTerm);
@@ -58,15 +60,15 @@ export default function ShowroomSidebar({
     return (
         <div className="h-full">
             <Sidebar className='w-full md:w-56 h-full'
-            theme={{
-                root: {
-                    inner: "h-full overflow-y-auto overflow-x-hidden rounded bg-gray-50 px-3 py-4 dark:bg-[rgb(32,38,43)] dark:border-b-2 dark:border-gray-700"
-                },
-                item: {
-                    base: "flex items-center justify-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700",
-                    active: "bg-gray-100 dark:bg-gray-700"
-                }
-            }}>
+                theme={{
+                    root: {
+                        inner: "h-full overflow-y-auto overflow-x-hidden rounded bg-gray-50 px-3 py-4 dark:bg-[rgb(32,38,43)] dark:border-b-2 dark:border-gray-700"
+                    },
+                    item: {
+                        base: "flex items-center justify-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700",
+                        active: "bg-gray-100 dark:bg-gray-700"
+                    }
+                }}>
                 <Sidebar.Items>
                     <Sidebar.ItemGroup>
                         <Label htmlFor="searchTerm" value="Search in Products:" />
@@ -202,6 +204,39 @@ export default function ShowroomSidebar({
                             </Button>
                         </div>
                     </Sidebar.ItemGroup>
+                    <div className="mt-8 md:mt-20 p-4 bg-gradient-to-br from-yellow-50 to-amber-100 dark:from-yellow-400/20 dark:to-amber-900/20 rounded-lg border border-yellow-200 dark:border-yellow-700/30">
+                        <div className="flex items-center gap-2 mb-3 justify-center">
+                            <div className="w-6 h-6 bg-gradient-to-r from-yellow-400 to-amber-500 rounded-full flex items-center justify-center">
+                                <span className="text-sm font-bold text-white">🪙</span>
+                            </div>
+                            <h2 className="text-montserrat text-lg font-medium text-gray-800 dark:text-white">Gold Prices</h2>
+                        </div>
+
+                        <div className="space-y-3">
+                            <div className="flex justify-between items-center p-2 bg-white dark:bg-gray-800 rounded-md shadow-sm">
+                                <span className="text-sm font-medium text-gray-600 dark:text-gray-300">USD</span>
+                                <span className="text-sm font-bold text-green-600 dark:text-green-400">
+                                    {data.data?.goldPriceUSD ? `$${data.data.goldPriceUSD}` : 'N/A'}
+                                </span>
+                            </div>
+
+                            <div className="flex justify-between items-center p-2 bg-white dark:bg-gray-800 rounded-md shadow-sm">
+                                <span className="text-sm font-medium text-gray-600 dark:text-gray-300">EUR</span>
+                                <span className="text-sm font-bold text-blue-600 dark:text-blue-400">
+                                    {data.data?.goldPriceEUR ? `€${data.data.goldPriceEUR}` : 'N/A'}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="mt-3 pt-3 border-t border-yellow-200 dark:border-yellow-700/30">
+                            <p className="text-xs text-gray-500 dark:text-gray-400 text-center">
+                                Last Update: <br /> <span className="font-bold">{data.data?.lastUpdate ? data.data.lastUpdate : 'N/A'} UTC</span>
+                            </p>
+                            <p className="mt-1 text-xs text-gray-500 dark:text-gray-400 text-center">
+                                (Limited requests per month.)
+                            </p>
+                        </div>
+                    </div>
                 </Sidebar.Items>
             </Sidebar>
         </div>
