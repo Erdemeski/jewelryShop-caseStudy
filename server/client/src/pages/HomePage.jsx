@@ -134,7 +134,7 @@ export default function HomePage() {
                 </span>
 
               </h1>
-              <p className="mt-0 md:mt-3 mb-0 sm:mb-10 text-sm sm:text-md text-gray-600 dark:text-gray-400 leading-relaxed font-montserrat font-light text-center">
+              <p className="mt-0 md:mt-3 mb-0 sm:mb-10 text-xs sm:text-sm md:text-base text-gray-600 dark:text-gray-400 leading-relaxed font-montserrat font-light text-center">
                 We work to be with you <br /> in your most precious memories 💖
               </p>
               <div className="flex items-center justify-center mt-2">
@@ -236,9 +236,15 @@ export default function HomePage() {
           <div className="mx-auto max-w-7xl px-6">
             <div>
               <p className="font-avenir font-normal text-[45px] text-center">Product List</p>
-              <p className="mt-3 text-md text-gray-600 dark:text-gray-400 leading-relaxed font-montserrat font-light text-center">
-                The most popular ones 💫
-              </p>
+              {products.length > 0 ? (
+                <p className="mt-3 text-md text-gray-600 dark:text-gray-400 leading-relaxed font-montserrat font-light text-center">
+                  The most popular ones 💫
+                </p>
+              ) : (
+                <div className="flex flex-col justify-center items-center py-8 mb-80">
+                  <Spinner size="lg" />
+                </div>
+              )}
             </div>
 
             <Swiper
