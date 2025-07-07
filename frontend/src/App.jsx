@@ -6,6 +6,7 @@ import Footer from './components/Footer.jsx'
 import ScrollToTop from './components/ScrollToTop.jsx'
 import NotFound from './components/NotFound.jsx'
 import ShowroomPage from './pages/ShowroomPage.jsx'
+import AboutPage from './pages/AboutPage.jsx'
 
 export default function App() {
   return (
@@ -15,6 +16,7 @@ export default function App() {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/showroom" element={<ShowroomPage />} />
+        <Route path="/about" element={<AboutPage />} />
         <Route path="*" element={<NotFound />} />
       </Routes>
       <Footer />

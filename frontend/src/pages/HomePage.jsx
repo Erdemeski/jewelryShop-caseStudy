@@ -1,5 +1,5 @@
 import React from 'react'
-import hero from '../assets/photos/diamond-png.webp'
+import hero from '../assets/photos/ring-silver.png'
 import { motion } from 'framer-motion'
 import { Button, Spinner } from 'flowbite-react'
 import { useState, useEffect, useRef } from 'react'
@@ -10,6 +10,7 @@ import { Navigation } from 'swiper/modules';
 import 'swiper/css';
 import 'swiper/css/navigation';
 import { Link } from 'react-router-dom'
+import FooterBanner from '../components/FooterBanner'
 
 const stats = [
   { id: 1, name: 'We have been working for you', value: '42', suffix: ' years', prefix: 'for' },
@@ -83,7 +84,7 @@ export default function HomePage() {
 
   return (
     <>
-      <div className="min-h-[90vh] bg-white dark:bg-[rgb(22,26,29)] flex flex-col items-center justify-center px-2 sm:px-6 py-12 sm:py-24">
+      <div className="min-h-[70vh] sm:min-h-[91vh] bg-white dark:bg-[rgb(22,26,29)] flex flex-col items-center justify-center px-2 sm:px-6 py-12 sm:py-24">
         <div className="relative isolate px-6 lg:px-8 flex-1 ">
           <div
             aria-hidden="true"
@@ -99,7 +100,7 @@ export default function HomePage() {
           </div>
           <div
             aria-hidden="true"
-            className="-z-20 absolute inset-x-0 top-0 transform-gpu overflow-hidden blur-3xl sm:-top-0 translate-y-[1000px] lg:translate-x-[250px] rotate-180"
+            className="-z-20 absolute inset-x-20 top-0 transform-gpu overflow-hidden blur-3xl sm:-top-0 translate-y-[1000px] lg:translate-x-[250px] rotate-180"
           >
             <div
               style={{
@@ -110,13 +111,13 @@ export default function HomePage() {
             />
           </div>
 
-          <div className="relative w-full max-w-md sm:max-w-lg md:max-w-xl aspect-square flex items-center justify-center z-10">
+          <div className="relative w-full max-w-md sm:max-w-lg md:max-w-xl aspect-square flex items-center justify-center z-10 overflow-hidden">
             <motion.img
               src={hero}
               alt="hero"
-              className="w-full h-full object-contain"
+              className="w-full h-full object-contain sm:scale-150 scale-100"
               initial={{ opacity: 0, scale: 0, rotate: -50 }}
-              animate={{ opacity: 1, scale: 1.5, rotate: 0 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
               transition={{ duration: 1, delay: 0.5 }}
             />
             <motion.div
@@ -125,14 +126,19 @@ export default function HomePage() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 1, delay: 1 }}
             >
-              <h1 className="font-montserrat text-3xl md:text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-50 text-center px-2 mt-10">
-                Welcome to our <br /> jewelry store
+              <h1 className="font-montserrat text-3xl md:text-4xl font-bold tracking-tight text-gray-900 dark:text-gray-50 text-center px-2 mt-0 md:mt-10">
+                Welcome to <br />
+                <span className='ml-2 font-semibold flex items-center justify-center'>
+                  Jewelry
+                  <span className='bg-gradient-to-r from-blue-500 to-purple-600 dark:from-blue-400 dark:to-purple-400 text-transparent bg-clip-text'>Store</span>
+                </span>
+
               </h1>
-              <p className="mt-3 sm:mb-10 text-md text-gray-600 dark:text-gray-400 leading-relaxed font-montserrat font-light text-center">
+              <p className="mt-0 md:mt-3 mb-0 sm:mb-10 text-sm sm:text-md text-gray-600 dark:text-gray-400 leading-relaxed font-montserrat font-light text-center">
                 We work to be with you <br /> in your most precious memories 💖
               </p>
-              <div className="flex items-center justify-center mt-6">
-                <Button color="dark" size='lg' outline className='font-montserrat' onClick={scrollToProducts}>
+              <div className="flex items-center justify-center mt-2">
+                <Button color="dark" size='sm' outline className='font-montserrat' onClick={scrollToProducts}>
                   Go to rings!
                 </Button>
               </div>
@@ -263,6 +269,7 @@ export default function HomePage() {
           </div>
         </motion.section>
       )}
+      <FooterBanner />
 
     </>
   )

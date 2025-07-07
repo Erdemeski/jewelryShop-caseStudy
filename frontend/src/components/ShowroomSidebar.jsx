@@ -57,7 +57,16 @@ export default function ShowroomSidebar({
 
     return (
         <div className="h-full">
-            <Sidebar className='w-full md:w-56 h-full'>
+            <Sidebar className='w-full md:w-56 h-full'
+            theme={{
+                root: {
+                    inner: "h-full overflow-y-auto overflow-x-hidden rounded bg-gray-50 px-3 py-4 dark:bg-[rgb(32,38,43)] dark:border-b-2 dark:border-gray-700"
+                },
+                item: {
+                    base: "flex items-center justify-center rounded-lg p-2 text-base font-normal text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700",
+                    active: "bg-gray-100 dark:bg-gray-700"
+                }
+            }}>
                 <Sidebar.Items>
                     <Sidebar.ItemGroup>
                         <Label htmlFor="searchTerm" value="Search in Products:" />
