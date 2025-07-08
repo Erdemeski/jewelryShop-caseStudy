@@ -21,18 +21,7 @@ app.listen(port, () => {
 app.use('/api/product', productRoutes);
 
 
-app.get('/', (req, res) => {
-    res.json({
-        message: 'Jewelry Shop API is running!',
-        endpoints: {
-            products: '/api/product/getproducts'
-        }
-    });
-});
-
 app.use(express.static(path.join(__dirname, '/client/dist')));
-
-
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '/client/dist/index.html'));
 });
